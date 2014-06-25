@@ -1,3 +1,8 @@
+var fs = require('fs');
+var root = fs.readFileSync("../client/client/index.html");
+var css = fs.readFileSync("../client/client/styles/styles.css");
+var config = fs.readFileSync("../client/client/scripts/config.js");
+var app = fs.readFileSync("../client/client/scripts/app.js")
 var messages = {
   results: [],
   objectId: 0
@@ -39,9 +44,21 @@ exports.handler = function(request, response) {
   }else if(request.method === "GET"){
     if(request.url === "/classes/messages" ){
       response.writeHead(200, headers);
+      response.end(JSON.stringify(messages));
     }else if(request.url === "/classes/room1"){
       response.writeHead(200,headers);
-    }else {
+    }else if(request.url === "/" || request.url[1] === "?"){
+      response.end(root);
+    }else if(request.url === "/styles/styles.css"){
+      response.writeHead(200, {'Content-Type': 'text/css'});
+      response.end(css);
+    }else if(request.url === "/scripts/config.js") {
+      response.writeHead(200, {'Content-Type': "test/javascript"});
+      response.end(config);
+    }else if(request.url === "/scripts/app.js") {
+      response.writeHead(200, {'Content-Type': "test/javascript"});
+      response.end(app);
+    }else{
       response.writeHead(404, headers);
     }
 
@@ -57,7 +74,7 @@ exports.handler = function(request, response) {
     }
   }
 
-  response.end(JSON.stringify(messages));
+
 };
 
 /* These headers will allow Cross-Origin Resource Sharing (CORS).
